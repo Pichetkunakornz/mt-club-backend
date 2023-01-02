@@ -3,13 +3,13 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@now/node"
+      "use": "@now/node@"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "src": "/(.*)",
+      "dest": "/index.js"
     }
   ]
 }
