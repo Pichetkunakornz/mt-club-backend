@@ -11,8 +11,6 @@ const cors = require("cors"); // แก้ไขเรื่อง cors policy
 
 const apiRouter = require("./controllers/api");
 const mongoose = require("mongoose");
-const User = require("./models/users");
-const bcrypt = require("bcrypt");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
