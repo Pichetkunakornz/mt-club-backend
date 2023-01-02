@@ -3,7 +3,9 @@ const app = express(); // สร้างตัวแปร app เป็น ins
 const path = require("path"); // เรียกใช้งาน path module
 const createError = require("http-errors"); // เรียกใช้งาน http-errors module
 const port = 3000; // port
-const url = "mongodb://localhost:27017"; // กำหนด url สำหรับ MongoDB Server
+//const url = "mongodb://localhost:27017"; // กำหนด url สำหรับ MongoDB Server
+const url =
+  "mongodb+srv://vercel-admin-user:mtclub0722246@cluster0.acycwyu.mongodb.net/?retryWrites=true&w=majority";
 const dbName = "club"; // กำหนดชื่อฐานข้อมูลที่จะใช้งาน
 const cors = require("cors"); // แก้ไขเรื่อง cors policy
 
