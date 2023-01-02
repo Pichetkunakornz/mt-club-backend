@@ -11,6 +11,7 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
+    default: "น้องชมรม",
   },
   prefix: {
     type: String,
