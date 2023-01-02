@@ -6,8 +6,6 @@ const port = 3000; // port
 const url = "mongodb://localhost:27017"; // กำหนด url สำหรับ MongoDB Server
 const dbName = "club"; // กำหนดชื่อฐานข้อมูลที่จะใช้งาน
 const cors = require("cors"); // แก้ไขเรื่อง cors policy
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 
 const apiRouter = require("./controllers/api");
 const mongoose = require("mongoose");
@@ -25,31 +23,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Set up passport and passport-local strategy
-passport.use(
-  new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
-    // Find the user with the given email
-    User.findOne({ email: email }, (err, user) => {
-      if (err) {
-        return done(err);
-      }
-      if (!user) {
-        // If the user with the given email doesn't exist, return an error message
-        return done(null, false, { message: "Incorrect email." });
-      }
-      // Check if the given password is correct
-      if (!bcrypt.compareSync(password, user.password)) {
-        // If the password is incorrect, return an error message
-        return done(null, false, { message: "Incorrect password." });
-      }
-      // If the email and password are correct, return the user object
-      return done(null, user);
-    });
-  })
-);
-
-// Set up passport middleware
-app.use(passport.initialize());
 // app.use(passport.session());
 
 // function authentication(req, res, next) {

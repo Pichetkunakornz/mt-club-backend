@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const passport = require("passport");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 //let userSchema = new Schema(require("../../models/users"));
