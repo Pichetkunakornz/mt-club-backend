@@ -5,8 +5,9 @@ const createError = require("http-errors"); // เรียกใช้งาน
 const port = 3000; // port
 //const url = "mongodb://localhost:27017"; // กำหนด url สำหรับ MongoDB Server
 const url =
-  "mongodb+srv://vercel-admin-user:mtclub0722246@cluster0.acycwyu.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://vercel-admin-user:mtclub0722246@cluster0.acycwyu.mongodb.net";
 const dbName = "club"; // กำหนดชื่อฐานข้อมูลที่จะใช้งาน
+const dbOpt = "?retryWrites=true&w=majority";
 const cors = require("cors"); // แก้ไขเรื่อง cors policy
 
 const apiRouter = require("./controllers/api");
@@ -77,7 +78,7 @@ app.use(function (err, req, res, next) {
 });
 
 mongoose.set("strictQuery", true);
-mongoose.connect(`${url}/${dbName}`);
+mongoose.connect(`${url}/${dbName}${dbOpt}`);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", function () {
