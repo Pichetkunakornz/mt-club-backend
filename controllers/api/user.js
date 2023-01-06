@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 //let userSchema = new Schema(require("../../models/users"));
 //const User = mongoose.model("users", userSchema);
 const User = require("../../models/users");
@@ -70,11 +70,13 @@ router
     console.log("password", loginData.password);
     console.log("user password", user.password);
     // Check if the given password is correct
-    if (!bcrypt.compareSync(loginData.password, user.password)) {
-      //if (loginData.password != user.password) {
+    // if (!bcrypt.compareSync(loginData.password, user.password)) {
+    if (loginData.password != user.password) {
       // If the password is incorrect, return an error message
       return res.status(401).json({ message: "รหัสผ่านไม่ถูกต้อง" });
     } else {
+      // filter password before return
+      user.password = undefined;
       const token = jwt.sign({ user: user }, secret);
       return res.json({
         token: token,
@@ -84,8 +86,8 @@ router
     }
   });
 function hashPassword(password) {
-  return bcrypt.hashSync(password, 10);
-  //return password;
+  // return bcrypt.hashSync(password, 10);
+  return password;
 }
 
 module.exports = router;
