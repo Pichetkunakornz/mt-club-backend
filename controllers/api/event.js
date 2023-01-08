@@ -19,7 +19,7 @@ router
         query.eventUniversity = user.university;
         query.eventStatus = "เปิดรับสมัคร";
       } else {
-        query.university = null;
+        query.eventUniversity = null;
       }
       const data = await Event.find(query);
       return res.status(200).send({ status: "success", data: data });
@@ -180,9 +180,10 @@ router
       let user = req.user;
       console.log("userid", userid);
       if (user.role != "ผู้ประสานงาน")
-        return res
-          .status(401)
-          .send({ status: "error", message: "ไม่มีสิทธิ์" });
+        return res.status(401).send({
+          status: "error",
+          message: "สิทธิ์การใช้งานของท่าน ไม่สามารถดำเนินการได้",
+        });
       let conditions = {
         _id: eventId,
         "participant.userId": userid,
