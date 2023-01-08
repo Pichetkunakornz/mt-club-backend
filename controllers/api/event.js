@@ -53,24 +53,30 @@ router
       let participant = [];
       console.log(await userList);
       if (user.role != "ผู้ประสานงาน") {
-        participant = await User.find({
-          _id: { $in: userList },
-        }).selectedInclusively(
-          "firstName",
-          "lastName",
-          "nickName",
-          "collegeYear"
+        participant = await User.find(
+          {
+            _id: { $in: userList },
+          },
+          {
+            firstName: 1,
+            lastName: 1,
+            nickName: 1,
+            collegeYear: 1,
+          }
         );
       } else {
-        participant = await User.find({
-          _id: { $in: userList },
-        }).selectedInclusively(
-          "firstName",
-          "lastName",
-          "nickName",
-          "collegeYear",
-          "phoneNumber",
-          "lineId"
+        participant = await User.find(
+          {
+            _id: { $in: userList },
+          },
+          {
+            firstName: 1,
+            lastName: 1,
+            nickName: 1,
+            collegeYear: 1,
+            phoneNumber: 1,
+            lineId: 1,
+          }
         );
       }
       // map data.participant.*.status to participant.*.status
