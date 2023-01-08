@@ -18,8 +18,6 @@ router
       if (user.role != "ผู้ประสานงาน") {
         query.eventUniversity = user.university;
         query.eventStatus = "เปิดรับสมัคร";
-      } else {
-        query.eventUniversity = null;
       }
       const data = await Event.find(query);
       return res.status(200).send({ status: "success", data: data });
