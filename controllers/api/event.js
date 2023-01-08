@@ -40,19 +40,39 @@ router
       return res.status(500).send({ status: "error", message: error.message });
     }
   })
-  .get("/:id/participant", async (req, res, next) => {
+  .get("/:id/participant", auth.authMiddleware, async (req, res, next) => {
     console.log("get /event/participant");
     try {
       let _id = req.params.id;
       const data = await Event.findById(_id);
+      const user = req.user;
       let userList = [];
       data.participant.forEach((element) => {
         if (element.status != "ยกเลิก") userList.push(element.userId);
       });
+      let participant = [];
       console.log(await userList);
-      let participant = await User.find({
-        _id: { $in: userList },
-      });
+      if (user.role != "ผู้ประสานงาน") {
+        participant = await User.find({
+          _id: { $in: userList },
+        }).selectedInclusively(
+          "firstName",
+          "lastName",
+          "nickName",
+          "collegeYear"
+        );
+      } else {
+        participant = await User.find({
+          _id: { $in: userList },
+        }).selectedInclusively(
+          "firstName",
+          "lastName",
+          "nickName",
+          "collegeYear",
+          "phoneNumber",
+          "lineId"
+        );
+      }
       // map data.participant.*.status to participant.*.status
       participant = participant.map((user) => {
         let participant = data.participant.find(
@@ -146,6 +166,71 @@ router
       return res.status(500).send({ status: "error", message: error.message });
     }
   })
+  .put("/:id/participant", auth.authMiddleware, async (req, res, next) => {
+    try {
+      let body = req.body;
+      let eventId = req.params.id;
+      let userid = req.userId;
+      let user = req.user;
+      console.log("userid", userid);
+      if (user.role != "ผู้ประสานงาน")
+        return res
+          .status(401)
+          .send({ status: "error", message: "ไม่มีสิทธิ์" });
+      let conditions = {
+        _id: eventId,
+        "participant.userId": userid,
+      };
+
+      let updateSet = {};
+      // { "participant.$[elem].status": body.status }
+      let updateAdd = {
+        participant: {
+          userId: userid,
+        },
+      };
+      if (body.status) {
+        updateAdd["participant"]["status"] = body.status;
+        updateSet["participant.$[elem].status"] = body.status;
+      }
+      if (body.message) {
+        updateAdd["participant"]["message"] = body.message;
+        console.log(typeof body.message);
+        if (typeof body.message == "object") {
+          for (const key in body.message) {
+            updateSet[`participant.$[elem].message.${key}`] = body.message[key];
+          }
+        }
+      }
+      let hasDoc = await Event.findOne(conditions);
+      let dataupdated;
+      if (hasDoc) {
+        dataupdated = await Event.findOneAndUpdate(
+          conditions,
+          { $set: updateSet },
+          {
+            arrayFilters: [{ "elem.userId": userid }],
+            upsert: true,
+            new: true,
+          }
+        );
+      } else {
+        console.log("else");
+        dataupdated = await Event.findByIdAndUpdate(
+          eventId,
+          { $addToSet: updateAdd },
+          {
+            new: true,
+          }
+        );
+      }
+      return res.status(200).send({ status: "success", data: dataupdated });
+    } catch (error) {
+      console.log("err", error);
+      return res.status(500).send({ status: "error", message: error.message });
+    }
+  })
+
   .post("/", async (req, res, next) => {
     let datacreate = { ...req.body };
     const eventCreated = await Event.create(datacreate);

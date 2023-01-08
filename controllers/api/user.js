@@ -23,6 +23,16 @@ router
   .post("/", async (req, res, next) => {
     try {
       let datacreate = { ...req.body };
+      //check unique email
+      const user = await User.findOne({
+        email: datacreate.email,
+      });
+      if (user) {
+        return res.status(500).json({
+          status: "error",
+          message: "อีเมลนี้มีผู้ใช้งานแล้ว",
+        });
+      }
       datacreate.password = hashPassword(datacreate.password);
       const data = await User.create(datacreate);
       return res.status(200).json({ data: data });
@@ -60,7 +70,7 @@ router
     // Find the user with the given email
     const user = await User.findOne({
       email: loginData.email,
-    });
+    }).select("+password");
     // If the authentication was successful, generate a unique secret for the user and save it in the database
     console.log("user", user);
     if (!user) {
