@@ -75,7 +75,10 @@ router
         return {
           ...user._doc,
           status: participant.status,
-          note: participant.message.note ? participant.message.note : "",
+          note:
+            participant.message && participant.message.note
+              ? participant.message.note
+              : "",
         };
       });
       return res.status(200).send({ status: "success", data: participant });
