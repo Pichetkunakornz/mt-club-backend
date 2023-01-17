@@ -82,6 +82,9 @@ module.exports = {
   specialEvent: {
     type: String,
   },
+  meritor: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
