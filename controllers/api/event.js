@@ -63,26 +63,20 @@ router
           }
         );
       } else {
-        participant = await User.find(
-          {
-            _id: { $in: userList },
-          },
-          {
-            firstName: 1,
-            lastName: 1,
-            nickName: 1,
-            collegeYear: 1,
-            phoneNumber: 1,
-            lineId: 1,
-          }
-        );
+        participant = await User.find({
+          _id: { $in: userList },
+        });
       }
       // map data.participant.*.status to participant.*.status
       participant = participant.map((user) => {
         let participant = data.participant.find(
           (participant) => participant.userId == user._id
         );
-        return { ...user._doc, status: participant.status };
+        return {
+          ...user._doc,
+          status: participant.status,
+          note: participant.message.note ? participant.message.note : "",
+        };
       });
       return res.status(200).send({ status: "success", data: participant });
     } catch (error) {
