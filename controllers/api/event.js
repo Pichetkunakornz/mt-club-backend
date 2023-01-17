@@ -72,14 +72,17 @@ router
         let participant = data.participant.find(
           (participant) => participant.userId == user._id
         );
-        return {
-          ...user._doc,
-          status: participant.status,
-          note:
-            participant.message && participant.message.note
-              ? participant.message.note
-              : "",
-        };
+        //is find?
+        if (participant) {
+          return {
+            ...user._doc,
+            status: participant.status,
+            note:
+              participant.message && participant.message.note
+                ? participant.message.note
+                : "",
+          };
+        }
       });
       return res.status(200).send({ status: "success", data: participant });
     } catch (error) {
